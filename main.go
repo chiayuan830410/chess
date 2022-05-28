@@ -157,6 +157,9 @@ func Steps(moment Moment, count int) {
 		maxCount = count
 		fmt.Println(count)
 	}
+	if count > 200 {
+		return
+	}
 	hash := xhashes.FNV64(display(moment.Board) + strconv.Itoa(moment.Action))
 	// fmt.Println(hash)
 	if ChessLibrary.CheckBoard2Redis(fmt.Sprint(hash)) {
@@ -164,6 +167,24 @@ func Steps(moment Moment, count int) {
 	} else {
 		ChessLibrary.SetBoard2Redis(fmt.Sprint(hash), moment)
 	}
+
+	// finished
+	finishFlag := 0
+	for _, bb := range moment.Board {
+		for _, b := range bb {
+			if b == nil {
+				continue
+			}
+			if b.Piece == 將 {
+				finishFlag++
+			}
+		}
+	}
+	if finishFlag < 2 {
+		return
+	}
+	// finished
+
 	if moment.Action == red {
 		moment.Action = black
 	} else if moment.Action == black {
@@ -480,7 +501,7 @@ func Steps(moment Moment, count int) {
 
 						//right down
 						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
-						if (x+1) <= 8 && (y-1) >= 5 {
+						if (x+2) <= 8 && (y-2) >= 5 {
 							if moment.Board[y-1][x+1] == nil && moment.Board[y-2][x+2] == nil {
 								moment.Board[y-2][x+2] = moment.Board[y][x]
 								moment.Board[y][x] = nil
@@ -497,7 +518,7 @@ func Steps(moment Moment, count int) {
 					} else if xyboard.Color == black {
 						//left up
 						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
-						if (x-1) >= 0 && (y+1) <= 4 {
+						if (x-2) >= 0 && (y+2) <= 4 {
 							if moment.Board[y+1][x-1] == nil && moment.Board[y+2][x-2] == nil {
 								moment.Board[y+2][x-2] = moment.Board[y][x]
 								moment.Board[y][x] = nil
@@ -512,7 +533,7 @@ func Steps(moment Moment, count int) {
 						}, count+1)
 						//right up
 						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
-						if (x+1) <= 8 && (y+1) <= 4 {
+						if (x+2) <= 8 && (y+2) <= 4 {
 							if moment.Board[y+1][x+1] == nil && moment.Board[y+2][x+2] == nil {
 								moment.Board[y+2][x+2] = moment.Board[y][x]
 								moment.Board[y][x] = nil
@@ -528,7 +549,7 @@ func Steps(moment Moment, count int) {
 
 						//left down
 						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
-						if (x-1) >= 0 && (y-1) >= 0 {
+						if (x-2) >= 0 && (y-2) >= 0 {
 							if moment.Board[y-1][x-1] == nil && moment.Board[y-2][x-2] == nil {
 								moment.Board[y-2][x-2] = moment.Board[y][x]
 								moment.Board[y][x] = nil
@@ -544,7 +565,7 @@ func Steps(moment Moment, count int) {
 
 						//right down
 						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
-						if (x+1) <= 8 && (y-1) >= 0 {
+						if (x+2) <= 8 && (y-2) >= 0 {
 							if moment.Board[y-1][x+1] == nil && moment.Board[y-2][x+2] == nil {
 								moment.Board[y-2][x+2] = moment.Board[y][x]
 								moment.Board[y][x] = nil
@@ -652,6 +673,262 @@ func Steps(moment Moment, count int) {
 					}
 
 				case 馬:
+					if xyboard.Color == red {
+						//left up
+						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						if (x-2) >= 0 && (y+1) <= 9 {
+							if moment.Board[y][x-1] == nil && moment.Board[y+1][x-2] == nil {
+								moment.Board[y+1][x-2] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							} else if moment.Board[y][x-1] == nil && moment.Board[y+1][x-2].Color == black {
+								moment.Board[y+1][x-2] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							}
+						}
+						Steps(Moment{
+							Board:  moment.Board,
+							Action: black,
+						}, count+1)
+						//right up
+						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						if (x+2) <= 8 && (y+1) <= 9 {
+							if moment.Board[y][x+1] == nil && moment.Board[y+1][x+2] == nil {
+								moment.Board[y+1][x+2] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							} else if moment.Board[y][x+1] == nil && moment.Board[y+1][x+2].Color == black {
+								moment.Board[y+1][x+2] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							}
+						}
+						Steps(Moment{
+							Board:  moment.Board,
+							Action: black,
+						}, count+1)
+
+						//left down
+						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						if (x-2) >= 0 && (y-1) >= 9 {
+							if moment.Board[y][x-1] == nil && moment.Board[y-1][x-2] == nil {
+								moment.Board[y-1][x-2] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							} else if moment.Board[y][x-1] == nil && moment.Board[y-1][x-2].Color == black {
+								moment.Board[y-1][x-2] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							}
+						}
+						Steps(Moment{
+							Board:  moment.Board,
+							Action: black,
+						}, count+1)
+
+						//right down
+						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						if (x+2) <= 8 && (y-1) >= 9 {
+							if moment.Board[y][x+1] == nil && moment.Board[y-1][x+2] == nil {
+								moment.Board[y-1][x+2] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							} else if moment.Board[y][x+1] == nil && moment.Board[y-1][x+2].Color == black {
+								moment.Board[y-1][x+2] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							}
+						}
+						Steps(Moment{
+							Board:  moment.Board,
+							Action: black,
+						}, count+1)
+
+						// -----
+						//left up
+						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						if (x+1) >= 0 && (y-2) <= 9 {
+							if moment.Board[y-1][x] == nil && moment.Board[y-2][x+1] == nil {
+								moment.Board[y-2][x+1] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							} else if moment.Board[y-1][x] == nil && moment.Board[y-2][x+1].Color == black {
+								moment.Board[y-2][x+1] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							}
+						}
+						Steps(Moment{
+							Board:  moment.Board,
+							Action: black,
+						}, count+1)
+						//right up
+						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						if (x+1) <= 8 && (y+2) <= 9 {
+							if moment.Board[y+1][x] == nil && moment.Board[y+2][x+1] == nil {
+								moment.Board[y+2][x+1] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							} else if moment.Board[y+1][x] == nil && moment.Board[y+2][x+1].Color == black {
+								moment.Board[y+2][x+1] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							}
+						}
+						Steps(Moment{
+							Board:  moment.Board,
+							Action: black,
+						}, count+1)
+
+						//left down
+						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						if (x-1) >= 0 && (y-2) >= 9 {
+							if moment.Board[y-1][x] == nil && moment.Board[y-2][x-1] == nil {
+								moment.Board[y-2][x-1] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							} else if moment.Board[y-1][x] == nil && moment.Board[y-2][x-1].Color == black {
+								moment.Board[y-2][x-1] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							}
+						}
+						Steps(Moment{
+							Board:  moment.Board,
+							Action: black,
+						}, count+1)
+
+						//right down
+						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						if (x-1) <= 8 && (y+2) >= 9 {
+							if moment.Board[y+1][x] == nil && moment.Board[y+2][x-1] == nil {
+								moment.Board[y+2][x-1] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							} else if moment.Board[y+1][x] == nil && moment.Board[y+2][x-1].Color == black {
+								moment.Board[y+2][x-1] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							}
+						}
+						Steps(Moment{
+							Board:  moment.Board,
+							Action: black,
+						}, count+1)
+						// -----
+					} else if xyboard.Color == black {
+						//left up
+						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						if (x-2) >= 0 && (y+1) <= 4 {
+							if moment.Board[y][x-1] == nil && moment.Board[y+1][x-2] == nil {
+								moment.Board[y+1][x-2] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							} else if moment.Board[y][x-1] == nil && moment.Board[y+1][x-2].Color == black {
+								moment.Board[y+1][x-2] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							}
+						}
+						Steps(Moment{
+							Board:  moment.Board,
+							Action: red,
+						}, count+1)
+						//right up
+						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						if (x+2) <= 8 && (y+1) <= 4 {
+							if moment.Board[y][x+1] == nil && moment.Board[y+1][x+2] == nil {
+								moment.Board[y+1][x+2] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							} else if moment.Board[y][x+1] == nil && moment.Board[y+1][x+2].Color == black {
+								moment.Board[y+1][x+2] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							}
+						}
+						Steps(Moment{
+							Board:  moment.Board,
+							Action: red,
+						}, count+1)
+
+						//left down
+						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						if (x-2) >= 0 && (y-1) >= 0 {
+							if moment.Board[y][x-1] == nil && moment.Board[y-1][x-2] == nil {
+								moment.Board[y-1][x-2] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							} else if moment.Board[y][x-1] == nil && moment.Board[y-1][x-2].Color == black {
+								moment.Board[y-1][x-2] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							}
+						}
+						Steps(Moment{
+							Board:  moment.Board,
+							Action: red,
+						}, count+1)
+
+						//right down
+						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						if (x+2) <= 8 && (y-1) >= 0 {
+							if moment.Board[y][x+1] == nil && moment.Board[y-1][x+2] == nil {
+								moment.Board[y-1][x+2] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							} else if moment.Board[y][x+1] == nil && moment.Board[y-1][x+2].Color == black {
+								moment.Board[y-1][x+2] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							}
+						}
+						Steps(Moment{
+							Board:  moment.Board,
+							Action: red,
+						}, count+1)
+						//-------
+						//left up
+						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						if (x+1) >= 0 && (y-2) <= 9 {
+							if moment.Board[y-1][x] == nil && moment.Board[y-2][x+1] == nil {
+								moment.Board[y-2][x+1] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							} else if moment.Board[y-1][x] == nil && moment.Board[y-2][x+1].Color == black {
+								moment.Board[y-2][x+1] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							}
+						}
+						Steps(Moment{
+							Board:  moment.Board,
+							Action: red,
+						}, count+1)
+						//right up
+						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						if (x+1) <= 8 && (y+2) <= 9 {
+							if moment.Board[y+1][x] == nil && moment.Board[y+2][x+1] == nil {
+								moment.Board[y+2][x+1] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							} else if moment.Board[y+1][x] == nil && moment.Board[y+2][x+1].Color == black {
+								moment.Board[y+2][x+1] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							}
+						}
+						Steps(Moment{
+							Board:  moment.Board,
+							Action: red,
+						}, count+1)
+
+						//left down
+						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						if (x-1) >= 0 && (y-2) >= 0 {
+							if moment.Board[y-1][x] == nil && moment.Board[y-2][x-1] == nil {
+								moment.Board[y-2][x-1] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							} else if moment.Board[y-1][x] == nil && moment.Board[y-2][x-1].Color == black {
+								moment.Board[y-2][x-1] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							}
+						}
+						Steps(Moment{
+							Board:  moment.Board,
+							Action: red,
+						}, count+1)
+
+						//right down
+						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						if (x-1) <= 8 && (y+2) >= 0 {
+							if moment.Board[y+1][x] == nil && moment.Board[y+2][x-1] == nil {
+								moment.Board[y+2][x-1] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							} else if moment.Board[y+1][x] == nil && moment.Board[y+2][x-1].Color == black {
+								moment.Board[y+2][x-1] = moment.Board[y][x]
+								moment.Board[y][x] = nil
+							}
+						}
+						Steps(Moment{
+							Board:  moment.Board,
+							Action: red,
+						}, count+1)
+
+					}
 				case 炮:
 				case 兵:
 				}
@@ -680,17 +957,16 @@ func main() {
 	fmt.Println(display(initBoard))
 
 	ChessLibrary.New()
-	// fmt.Println(display((ChessLibrary.GetBoard2Redis("826e502a65e0c387260883e2f871314e").Board)))
+	// for {
+	// 	var strHash string
+	// 	fmt.Scanf("%s", &strHash)
+	// 	fmt.Println(display((ChessLibrary.GetBoard2Redis(strHash).Board)))
+
+	// }
 	var moment Moment
 	// library := map[int64]Moment{}
 	moment.Action = red
 	moment.Board = initBoard
 	Steps(moment, 0)
-
-	for k, v := range library {
-		fmt.Println(k, v.Action)
-		fmt.Println(display(v.Board))
-		fmt.Println("========================")
-	}
 
 }
