@@ -76,8 +76,6 @@ const (
 	馬
 	炮
 	卒
-	帥 = 0
-	兵 = 6
 )
 const (
 	red   = 1
@@ -198,7 +196,7 @@ func Steps(moment Moment, count int) {
 		for x, xyboard := range xbroard {
 			if xyboard != nil && xyboard.Color == moment.Action {
 				switch xyboard.Piece {
-				case 帥:
+				case 將:
 					if xyboard.Color == red {
 						//left
 						basicBoard = moment.Board
@@ -1026,7 +1024,7 @@ func Steps(moment Moment, count int) {
 					}
 				case 炮:
 
-				case 兵:
+				case 卒:
 				}
 			}
 		}
@@ -1064,5 +1062,11 @@ func main() {
 	moment.Action = red
 	moment.Board = initBoard
 	Steps(moment, 0)
+
+	// initBoard[0][0] = nil
+	// initBoard[9][0] = &Piece{車, black}
+	// hash := xhashes.FNV64(display(initBoard) + strconv.Itoa(red))
+	// fmt.Println(hash)
+	// fmt.Println(display(initBoard))
 
 }
