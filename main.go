@@ -157,7 +157,7 @@ func Steps(moment Moment, count int) {
 		maxCount = count
 		fmt.Println(count)
 	}
-	if count > 100 {
+	if count > 50 {
 		return
 	}
 	hash := xhashes.FNV64(display(moment.Board) + strconv.Itoa(moment.Action))
@@ -193,6 +193,7 @@ func Steps(moment Moment, count int) {
 
 	// moment.Board := moment.Board
 	// move
+	basicBoard := moment.Board
 	for y, xbroard := range moment.Board {
 		for x, xyboard := range xbroard {
 			if xyboard != nil && xyboard.Color == moment.Action {
@@ -200,382 +201,382 @@ func Steps(moment Moment, count int) {
 				case 帥:
 					if xyboard.Color == red {
 						//left
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x - 1) >= 3 {
-							if moment.Board[y][x-1] == nil {
-								moment.Board[y][x-1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y][x-1].Color == black {
-								moment.Board[y][x-1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y][x-1] == nil {
+								basicBoard[y][x-1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y][x-1].Color == black {
+								basicBoard[y][x-1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: black,
 						}, count+1)
 						//right
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x + 1) <= 5 {
-							if moment.Board[y][x+1] == nil {
-								moment.Board[y][x+1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y][x+1].Color == black {
-								moment.Board[y][x+1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y][x+1] == nil {
+								basicBoard[y][x+1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y][x+1].Color == black {
+								basicBoard[y][x+1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: black,
 						}, count+1)
 						//up
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (y + 1) <= 9 {
-							if moment.Board[y+1][x] == nil {
-								moment.Board[y+1][x] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y+1][x].Color == black {
-								moment.Board[y+1][x] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y+1][x] == nil {
+								basicBoard[y+1][x] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y+1][x].Color == black {
+								basicBoard[y+1][x] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: black,
 						}, count+1)
 						//down
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (y - 1) >= 7 {
-							if moment.Board[y-1][x] == nil {
-								moment.Board[y-1][x] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y-1][x].Color == black {
-								moment.Board[y-1][x] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y-1][x] == nil {
+								basicBoard[y-1][x] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y-1][x].Color == black {
+								basicBoard[y-1][x] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: black,
 						}, count+1)
 					} else if xyboard.Color == black {
 						//left
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x - 1) >= 3 {
-							if moment.Board[y][x-1] == nil {
-								moment.Board[y][x-1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y][x-1].Color == black {
-								moment.Board[y][x-1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y][x-1] == nil {
+								basicBoard[y][x-1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y][x-1].Color == red {
+								basicBoard[y][x-1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: red,
 						}, count+1)
 						//right
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x + 1) <= 5 {
-							if moment.Board[y][x+1] == nil {
-								moment.Board[y][x+1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y][x+1].Color == black {
-								moment.Board[y][x+1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y][x+1] == nil {
+								basicBoard[y][x+1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y][x+1].Color == red {
+								basicBoard[y][x+1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: red,
 						}, count+1)
 						//up
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (y + 1) <= 2 {
-							if moment.Board[y+1][x] == nil {
-								moment.Board[y+1][x] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y+1][x].Color == black {
-								moment.Board[y+1][x] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y+1][x] == nil {
+								basicBoard[y+1][x] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y+1][x].Color == red {
+								basicBoard[y+1][x] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: red,
 						}, count+1)
 						//down
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (y - 1) >= 0 {
-							if moment.Board[y-1][x] == nil {
-								moment.Board[y-1][x] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y-1][x].Color == black {
-								moment.Board[y-1][x] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y-1][x] == nil {
+								basicBoard[y-1][x] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y-1][x].Color == red {
+								basicBoard[y-1][x] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: red,
 						}, count+1)
 					}
 				case 士:
 					if xyboard.Color == red {
 						//left up
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x-1) >= 3 && (y+1) <= 9 {
-							if moment.Board[y+1][x-1] == nil {
-								moment.Board[y+1][x-1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y+1][x-1].Color == black {
-								moment.Board[y+1][x-1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y+1][x-1] == nil {
+								basicBoard[y+1][x-1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y+1][x-1].Color == black {
+								basicBoard[y+1][x-1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: black,
 						}, count+1)
 						//right up
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x+1) <= 5 && (y+1) <= 9 {
-							if moment.Board[y+1][x+1] == nil {
-								moment.Board[y+1][x+1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y+1][x+1].Color == black {
-								moment.Board[y+1][x+1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y+1][x+1] == nil {
+								basicBoard[y+1][x+1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y+1][x+1].Color == black {
+								basicBoard[y+1][x+1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: black,
 						}, count+1)
 
 						//left down
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x-1) >= 3 && (y-1) >= 7 {
-							if moment.Board[y-1][x-1] == nil {
-								moment.Board[y-1][x-1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y-1][x-1].Color == black {
-								moment.Board[y-1][x-1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y-1][x-1] == nil {
+								basicBoard[y-1][x-1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y-1][x-1].Color == black {
+								basicBoard[y-1][x-1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: black,
 						}, count+1)
 
 						//right down
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x+1) <= 5 && (y-1) >= 7 {
-							if moment.Board[y-1][x+1] == nil {
-								moment.Board[y-1][x+1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y-1][x+1].Color == black {
-								moment.Board[y-1][x+1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y-1][x+1] == nil {
+								basicBoard[y-1][x+1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y-1][x+1].Color == black {
+								basicBoard[y-1][x+1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: black,
 						}, count+1)
 
 					} else if xyboard.Color == black {
 						//left up
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x-1) >= 3 && (y+1) <= 2 {
-							if moment.Board[y+1][x-1] == nil {
-								moment.Board[y+1][x-1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y+1][x-1].Color == black {
-								moment.Board[y+1][x-1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y+1][x-1] == nil {
+								basicBoard[y+1][x-1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y+1][x-1].Color == red {
+								basicBoard[y+1][x-1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: red,
 						}, count+1)
 						//right up
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x+1) <= 5 && (y+1) <= 2 {
-							if moment.Board[y+1][x+1] == nil {
-								moment.Board[y+1][x+1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y+1][x+1].Color == black {
-								moment.Board[y+1][x+1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y+1][x+1] == nil {
+								basicBoard[y+1][x+1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y+1][x+1].Color == red {
+								basicBoard[y+1][x+1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: red,
 						}, count+1)
 
 						//left down
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x-1) >= 3 && (y-1) >= 0 {
-							if moment.Board[y-1][x-1] == nil {
-								moment.Board[y-1][x-1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y-1][x-1].Color == black {
-								moment.Board[y-1][x-1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y-1][x-1] == nil {
+								basicBoard[y-1][x-1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y-1][x-1].Color == red {
+								basicBoard[y-1][x-1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: red,
 						}, count+1)
 
 						//right down
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x+1) <= 5 && (y-1) >= 0 {
-							if moment.Board[y-1][x+1] == nil {
-								moment.Board[y-1][x+1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y-1][x+1].Color == black {
-								moment.Board[y-1][x+1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y-1][x+1] == nil {
+								basicBoard[y-1][x+1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y-1][x+1].Color == red {
+								basicBoard[y-1][x+1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: red,
 						}, count+1)
 					}
 				case 象:
 					if xyboard.Color == red {
 						//left up
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x-2) >= 0 && (y+2) <= 9 {
-							if moment.Board[y+1][x-1] == nil && moment.Board[y+2][x-2] == nil {
-								moment.Board[y+2][x-2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y+1][x-1] == nil && moment.Board[y+2][x-2].Color == black {
-								moment.Board[y+2][x-2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y+1][x-1] == nil && basicBoard[y+2][x-2] == nil {
+								basicBoard[y+2][x-2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y+1][x-1] == nil && basicBoard[y+2][x-2].Color == black {
+								basicBoard[y+2][x-2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: black,
 						}, count+1)
 						//right up
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x+2) <= 8 && (y+2) <= 9 {
-							if moment.Board[y+1][x+1] == nil && moment.Board[y+2][x+2] == nil {
-								moment.Board[y+2][x+2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y+1][x+1] == nil && moment.Board[y+2][x+2].Color == black {
-								moment.Board[y+2][x+2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y+1][x+1] == nil && basicBoard[y+2][x+2] == nil {
+								basicBoard[y+2][x+2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y+1][x+1] == nil && basicBoard[y+2][x+2].Color == black {
+								basicBoard[y+2][x+2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: black,
 						}, count+1)
 
 						//left down
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x-2) >= 0 && (y-2) >= 5 {
-							if moment.Board[y-1][x-1] == nil && moment.Board[y-2][x-2] == nil {
-								moment.Board[y-2][x-2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y-1][x-1] == nil && moment.Board[y-2][x-2].Color == black {
-								moment.Board[y-2][x-2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y-1][x-1] == nil && basicBoard[y-2][x-2] == nil {
+								basicBoard[y-2][x-2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y-1][x-1] == nil && basicBoard[y-2][x-2].Color == black {
+								basicBoard[y-2][x-2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: black,
 						}, count+1)
 
 						//right down
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x+2) <= 8 && (y-2) >= 5 {
-							if moment.Board[y-1][x+1] == nil && moment.Board[y-2][x+2] == nil {
-								moment.Board[y-2][x+2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y-1][x+1] == nil && moment.Board[y-2][x+2].Color == black {
-								moment.Board[y-2][x+2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y-1][x+1] == nil && basicBoard[y-2][x+2] == nil {
+								basicBoard[y-2][x+2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y-1][x+1] == nil && basicBoard[y-2][x+2].Color == black {
+								basicBoard[y-2][x+2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: black,
 						}, count+1)
 
 					} else if xyboard.Color == black {
 						//left up
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x-2) >= 0 && (y+2) <= 4 {
-							if moment.Board[y+1][x-1] == nil && moment.Board[y+2][x-2] == nil {
-								moment.Board[y+2][x-2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y+1][x-1] == nil && moment.Board[y+2][x-2].Color == black {
-								moment.Board[y+2][x-2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y+1][x-1] == nil && basicBoard[y+2][x-2] == nil {
+								basicBoard[y+2][x-2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y+1][x-1] == nil && basicBoard[y+2][x-2].Color == red {
+								basicBoard[y+2][x-2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: red,
 						}, count+1)
 						//right up
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x+2) <= 8 && (y+2) <= 4 {
-							if moment.Board[y+1][x+1] == nil && moment.Board[y+2][x+2] == nil {
-								moment.Board[y+2][x+2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y+1][x+1] == nil && moment.Board[y+2][x+2].Color == black {
-								moment.Board[y+2][x+2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y+1][x+1] == nil && basicBoard[y+2][x+2] == nil {
+								basicBoard[y+2][x+2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y+1][x+1] == nil && basicBoard[y+2][x+2].Color == red {
+								basicBoard[y+2][x+2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: red,
 						}, count+1)
 
 						//left down
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x-2) >= 0 && (y-2) >= 0 {
-							if moment.Board[y-1][x-1] == nil && moment.Board[y-2][x-2] == nil {
-								moment.Board[y-2][x-2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y-1][x-1] == nil && moment.Board[y-2][x-2].Color == black {
-								moment.Board[y-2][x-2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y-1][x-1] == nil && basicBoard[y-2][x-2] == nil {
+								basicBoard[y-2][x-2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y-1][x-1] == nil && basicBoard[y-2][x-2].Color == red {
+								basicBoard[y-2][x-2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: red,
 						}, count+1)
 
 						//right down
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x+2) <= 8 && (y-2) >= 0 {
-							if moment.Board[y-1][x+1] == nil && moment.Board[y-2][x+2] == nil {
-								moment.Board[y-2][x+2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y-1][x+1] == nil && moment.Board[y-2][x+2].Color == black {
-								moment.Board[y-2][x+2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y-1][x+1] == nil && basicBoard[y-2][x+2] == nil {
+								basicBoard[y-2][x+2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y-1][x+1] == nil && basicBoard[y-2][x+2].Color == red {
+								basicBoard[y-2][x+2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: red,
 						}, count+1)
 					}
@@ -583,19 +584,19 @@ func Steps(moment Moment, count int) {
 					if xyboard.Color == red {
 						//left
 						for xx := x - 1; xx >= 0; xx-- {
-							moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
-							if moment.Board[y][xx] == nil {
-								moment.Board[y][xx] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							basicBoard = moment.Board
+							if basicBoard[y][xx] == nil {
+								basicBoard[y][xx] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 								Steps(Moment{
-									Board:  moment.Board,
+									Board:  basicBoard,
 									Action: black,
 								}, count+1)
-							} else if moment.Board[y][xx].Color == black {
-								moment.Board[y][xx] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							} else if basicBoard[y][xx].Color == black {
+								basicBoard[y][xx] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 								Steps(Moment{
-									Board:  moment.Board,
+									Board:  basicBoard,
 									Action: black,
 								}, count+1)
 								break
@@ -606,20 +607,20 @@ func Steps(moment Moment, count int) {
 						}
 
 						//right
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						for xx := x + 1; xx <= 8; xx++ {
-							if moment.Board[y][xx] == nil {
-								moment.Board[y][xx] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y][xx] == nil {
+								basicBoard[y][xx] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 								Steps(Moment{
-									Board:  moment.Board,
+									Board:  basicBoard,
 									Action: black,
 								}, count+1)
-							} else if moment.Board[y][xx].Color == black {
-								moment.Board[y][xx] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							} else if basicBoard[y][xx].Color == black {
+								basicBoard[y][xx] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 								Steps(Moment{
-									Board:  moment.Board,
+									Board:  basicBoard,
 									Action: black,
 								}, count+1)
 								break
@@ -629,20 +630,20 @@ func Steps(moment Moment, count int) {
 						}
 
 						//up
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						for yy := y + 1; yy <= 9; yy++ {
-							if moment.Board[yy][x] == nil {
-								moment.Board[yy][x] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[yy][x] == nil {
+								basicBoard[yy][x] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 								Steps(Moment{
-									Board:  moment.Board,
+									Board:  basicBoard,
 									Action: black,
 								}, count+1)
-							} else if moment.Board[yy][x].Color == black {
-								moment.Board[yy][x] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							} else if basicBoard[yy][x].Color == black {
+								basicBoard[yy][x] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 								Steps(Moment{
-									Board:  moment.Board,
+									Board:  basicBoard,
 									Action: black,
 								}, count+1)
 								break
@@ -651,20 +652,20 @@ func Steps(moment Moment, count int) {
 							}
 						}
 						//down
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						for yy := y - 1; yy >= 0; yy-- {
-							if moment.Board[yy][x] == nil {
-								moment.Board[yy][x] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[yy][x] == nil {
+								basicBoard[yy][x] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 								Steps(Moment{
-									Board:  moment.Board,
+									Board:  basicBoard,
 									Action: black,
 								}, count+1)
-							} else if moment.Board[yy][x].Color == black {
-								moment.Board[yy][x] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							} else if basicBoard[yy][x].Color == black {
+								basicBoard[yy][x] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 								Steps(Moment{
-									Board:  moment.Board,
+									Board:  basicBoard,
 									Action: black,
 								}, count+1)
 								break
@@ -675,19 +676,19 @@ func Steps(moment Moment, count int) {
 					} else if xyboard.Color == black {
 						//left
 						for xx := x - 1; xx >= 0; xx-- {
-							moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
-							if moment.Board[y][xx] == nil {
-								moment.Board[y][xx] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							basicBoard = moment.Board
+							if basicBoard[y][xx] == nil {
+								basicBoard[y][xx] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 								Steps(Moment{
-									Board:  moment.Board,
+									Board:  basicBoard,
 									Action: red,
 								}, count+1)
-							} else if moment.Board[y][xx].Color == black {
-								moment.Board[y][xx] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							} else if basicBoard[y][xx].Color == red {
+								basicBoard[y][xx] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 								Steps(Moment{
-									Board:  moment.Board,
+									Board:  basicBoard,
 									Action: red,
 								}, count+1)
 								break
@@ -698,20 +699,20 @@ func Steps(moment Moment, count int) {
 						}
 
 						//right
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						for xx := x + 1; xx <= 8; xx++ {
-							if moment.Board[y][xx] == nil {
-								moment.Board[y][xx] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y][xx] == nil {
+								basicBoard[y][xx] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 								Steps(Moment{
-									Board:  moment.Board,
+									Board:  basicBoard,
 									Action: red,
 								}, count+1)
-							} else if moment.Board[y][xx].Color == black {
-								moment.Board[y][xx] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							} else if basicBoard[y][xx].Color == red {
+								basicBoard[y][xx] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 								Steps(Moment{
-									Board:  moment.Board,
+									Board:  basicBoard,
 									Action: red,
 								}, count+1)
 								break
@@ -721,20 +722,20 @@ func Steps(moment Moment, count int) {
 						}
 
 						//up
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						for yy := y + 1; yy <= 9; yy++ {
-							if moment.Board[yy][x] == nil {
-								moment.Board[yy][x] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[yy][x] == nil {
+								basicBoard[yy][x] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 								Steps(Moment{
-									Board:  moment.Board,
+									Board:  basicBoard,
 									Action: red,
 								}, count+1)
-							} else if moment.Board[yy][x].Color == black {
-								moment.Board[yy][x] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							} else if basicBoard[yy][x].Color == red {
+								basicBoard[yy][x] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 								Steps(Moment{
-									Board:  moment.Board,
+									Board:  basicBoard,
 									Action: red,
 								}, count+1)
 								break
@@ -743,20 +744,20 @@ func Steps(moment Moment, count int) {
 							}
 						}
 						//down
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						for yy := y - 1; yy >= 0; yy-- {
-							if moment.Board[yy][x] == nil {
-								moment.Board[yy][x] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[yy][x] == nil {
+								basicBoard[yy][x] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 								Steps(Moment{
-									Board:  moment.Board,
+									Board:  basicBoard,
 									Action: red,
 								}, count+1)
-							} else if moment.Board[yy][x].Color == black {
-								moment.Board[yy][x] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							} else if basicBoard[yy][x].Color == red {
+								basicBoard[yy][x] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 								Steps(Moment{
-									Board:  moment.Board,
+									Board:  basicBoard,
 									Action: red,
 								}, count+1)
 								break
@@ -769,256 +770,256 @@ func Steps(moment Moment, count int) {
 				case 馬:
 					if xyboard.Color == red {
 						//left up
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x-2) >= 0 && (y+1) <= 9 {
-							if moment.Board[y][x-1] == nil && moment.Board[y+1][x-2] == nil {
-								moment.Board[y+1][x-2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y][x-1] == nil && moment.Board[y+1][x-2].Color == black {
-								moment.Board[y+1][x-2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y][x-1] == nil && basicBoard[y+1][x-2] == nil {
+								basicBoard[y+1][x-2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y][x-1] == nil && basicBoard[y+1][x-2].Color == black {
+								basicBoard[y+1][x-2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: black,
 						}, count+1)
 						//right up
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x+2) <= 8 && (y+1) <= 9 {
-							if moment.Board[y][x+1] == nil && moment.Board[y+1][x+2] == nil {
-								moment.Board[y+1][x+2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y][x+1] == nil && moment.Board[y+1][x+2].Color == black {
-								moment.Board[y+1][x+2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y][x+1] == nil && basicBoard[y+1][x+2] == nil {
+								basicBoard[y+1][x+2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y][x+1] == nil && basicBoard[y+1][x+2].Color == black {
+								basicBoard[y+1][x+2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: black,
 						}, count+1)
 
 						//left down
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x-2) >= 0 && (y-1) >= 0 {
-							if moment.Board[y][x-1] == nil && moment.Board[y-1][x-2] == nil {
-								moment.Board[y-1][x-2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y][x-1] == nil && moment.Board[y-1][x-2].Color == black {
-								moment.Board[y-1][x-2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y][x-1] == nil && basicBoard[y-1][x-2] == nil {
+								basicBoard[y-1][x-2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y][x-1] == nil && basicBoard[y-1][x-2].Color == black {
+								basicBoard[y-1][x-2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: black,
 						}, count+1)
 
 						//right down
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x+2) <= 8 && (y-1) >= 0 {
-							if moment.Board[y][x+1] == nil && moment.Board[y-1][x+2] == nil {
-								moment.Board[y-1][x+2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y][x+1] == nil && moment.Board[y-1][x+2].Color == black {
-								moment.Board[y-1][x+2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y][x+1] == nil && basicBoard[y-1][x+2] == nil {
+								basicBoard[y-1][x+2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y][x+1] == nil && basicBoard[y-1][x+2].Color == black {
+								basicBoard[y-1][x+2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: black,
 						}, count+1)
 
 						// -----
 						//left up
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x+1) <= 8 && (y-2) >= 0 {
-							if moment.Board[y-1][x] == nil && moment.Board[y-2][x+1] == nil {
-								moment.Board[y-2][x+1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y-1][x] == nil && moment.Board[y-2][x+1].Color == black {
-								moment.Board[y-2][x+1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y-1][x] == nil && basicBoard[y-2][x+1] == nil {
+								basicBoard[y-2][x+1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y-1][x] == nil && basicBoard[y-2][x+1].Color == black {
+								basicBoard[y-2][x+1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: black,
 						}, count+1)
 						//right up
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x+1) <= 8 && (y+2) <= 9 {
-							if moment.Board[y+1][x] == nil && moment.Board[y+2][x+1] == nil {
-								moment.Board[y+2][x+1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y+1][x] == nil && moment.Board[y+2][x+1].Color == black {
-								moment.Board[y+2][x+1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y+1][x] == nil && basicBoard[y+2][x+1] == nil {
+								basicBoard[y+2][x+1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y+1][x] == nil && basicBoard[y+2][x+1].Color == black {
+								basicBoard[y+2][x+1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: black,
 						}, count+1)
 
 						//left down
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x-1) >= 0 && (y-2) >= 0 {
-							if moment.Board[y-1][x] == nil && moment.Board[y-2][x-1] == nil {
-								moment.Board[y-2][x-1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y-1][x] == nil && moment.Board[y-2][x-1].Color == black {
-								moment.Board[y-2][x-1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y-1][x] == nil && basicBoard[y-2][x-1] == nil {
+								basicBoard[y-2][x-1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y-1][x] == nil && basicBoard[y-2][x-1].Color == black {
+								basicBoard[y-2][x-1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: black,
 						}, count+1)
 
 						//right down
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x-1) >= 0 && (y+2) <= 9 {
-							if moment.Board[y+1][x] == nil && moment.Board[y+2][x-1] == nil {
-								moment.Board[y+2][x-1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y+1][x] == nil && moment.Board[y+2][x-1].Color == black {
-								moment.Board[y+2][x-1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y+1][x] == nil && basicBoard[y+2][x-1] == nil {
+								basicBoard[y+2][x-1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y+1][x] == nil && basicBoard[y+2][x-1].Color == black {
+								basicBoard[y+2][x-1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: black,
 						}, count+1)
 						// -----
 					} else if xyboard.Color == black {
 						//left up
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x-2) >= 0 && (y+1) <= 9 {
-							if moment.Board[y][x-1] == nil && moment.Board[y+1][x-2] == nil {
-								moment.Board[y+1][x-2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y][x-1] == nil && moment.Board[y+1][x-2].Color == black {
-								moment.Board[y+1][x-2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y][x-1] == nil && basicBoard[y+1][x-2] == nil {
+								basicBoard[y+1][x-2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y][x-1] == nil && basicBoard[y+1][x-2].Color == red {
+								basicBoard[y+1][x-2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: red,
 						}, count+1)
 						//right up
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x+2) <= 8 && (y+1) <= 9 {
-							if moment.Board[y][x+1] == nil && moment.Board[y+1][x+2] == nil {
-								moment.Board[y+1][x+2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y][x+1] == nil && moment.Board[y+1][x+2].Color == black {
-								moment.Board[y+1][x+2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y][x+1] == nil && basicBoard[y+1][x+2] == nil {
+								basicBoard[y+1][x+2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y][x+1] == nil && basicBoard[y+1][x+2].Color == red {
+								basicBoard[y+1][x+2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: red,
 						}, count+1)
 
 						//left down
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x-2) >= 0 && (y-1) >= 0 {
-							if moment.Board[y][x-1] == nil && moment.Board[y-1][x-2] == nil {
-								moment.Board[y-1][x-2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y][x-1] == nil && moment.Board[y-1][x-2].Color == black {
-								moment.Board[y-1][x-2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y][x-1] == nil && basicBoard[y-1][x-2] == nil {
+								basicBoard[y-1][x-2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y][x-1] == nil && basicBoard[y-1][x-2].Color == red {
+								basicBoard[y-1][x-2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: red,
 						}, count+1)
 
 						//right down
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x+2) <= 8 && (y-1) >= 0 {
-							if moment.Board[y][x+1] == nil && moment.Board[y-1][x+2] == nil {
-								moment.Board[y-1][x+2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y][x+1] == nil && moment.Board[y-1][x+2].Color == black {
-								moment.Board[y-1][x+2] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y][x+1] == nil && basicBoard[y-1][x+2] == nil {
+								basicBoard[y-1][x+2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y][x+1] == nil && basicBoard[y-1][x+2].Color == red {
+								basicBoard[y-1][x+2] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: red,
 						}, count+1)
 						//-------
 						//left up
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x+1) <= 8 && (y-2) >= 0 {
-							if moment.Board[y-1][x] == nil && moment.Board[y-2][x+1] == nil {
-								moment.Board[y-2][x+1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y-1][x] == nil && moment.Board[y-2][x+1].Color == black {
-								moment.Board[y-2][x+1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y-1][x] == nil && basicBoard[y-2][x+1] == nil {
+								basicBoard[y-2][x+1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y-1][x] == nil && basicBoard[y-2][x+1].Color == red {
+								basicBoard[y-2][x+1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: red,
 						}, count+1)
 						//right up
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x+1) <= 8 && (y+2) <= 9 {
-							if moment.Board[y+1][x] == nil && moment.Board[y+2][x+1] == nil {
-								moment.Board[y+2][x+1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y+1][x] == nil && moment.Board[y+2][x+1].Color == black {
-								moment.Board[y+2][x+1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y+1][x] == nil && basicBoard[y+2][x+1] == nil {
+								basicBoard[y+2][x+1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y+1][x] == nil && basicBoard[y+2][x+1].Color == red {
+								basicBoard[y+2][x+1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: red,
 						}, count+1)
 
 						//left down
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x-1) >= 0 && (y-2) >= 0 {
-							if moment.Board[y-1][x] == nil && moment.Board[y-2][x-1] == nil {
-								moment.Board[y-2][x-1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y-1][x] == nil && moment.Board[y-2][x-1].Color == black {
-								moment.Board[y-2][x-1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y-1][x] == nil && basicBoard[y-2][x-1] == nil {
+								basicBoard[y-2][x-1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y-1][x] == nil && basicBoard[y-2][x-1].Color == red {
+								basicBoard[y-2][x-1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: red,
 						}, count+1)
 
 						//right down
-						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
+						basicBoard = moment.Board
 						if (x-1) >= 0 && (y+2) <= 9 {
-							if moment.Board[y+1][x] == nil && moment.Board[y+2][x-1] == nil {
-								moment.Board[y+2][x-1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
-							} else if moment.Board[y+1][x] == nil && moment.Board[y+2][x-1].Color == black {
-								moment.Board[y+2][x-1] = moment.Board[y][x]
-								moment.Board[y][x] = nil
+							if basicBoard[y+1][x] == nil && basicBoard[y+2][x-1] == nil {
+								basicBoard[y+2][x-1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
+							} else if basicBoard[y+1][x] == nil && basicBoard[y+2][x-1].Color == red {
+								basicBoard[y+2][x-1] = basicBoard[y][x]
+								basicBoard[y][x] = nil
 							}
 						}
 						Steps(Moment{
-							Board:  moment.Board,
+							Board:  basicBoard,
 							Action: red,
 						}, count+1)
 
