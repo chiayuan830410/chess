@@ -157,7 +157,7 @@ func Steps(moment Moment, count int) {
 		maxCount = count
 		fmt.Println(count)
 	}
-	if count > 200 {
+	if count > 100 {
 		return
 	}
 	hash := xhashes.FNV64(display(moment.Board) + strconv.Itoa(moment.Action))
@@ -707,7 +707,7 @@ func Steps(moment Moment, count int) {
 
 						//left down
 						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
-						if (x-2) >= 0 && (y-1) >= 9 {
+						if (x-2) >= 0 && (y-1) >= 0 {
 							if moment.Board[y][x-1] == nil && moment.Board[y-1][x-2] == nil {
 								moment.Board[y-1][x-2] = moment.Board[y][x]
 								moment.Board[y][x] = nil
@@ -723,7 +723,7 @@ func Steps(moment Moment, count int) {
 
 						//right down
 						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
-						if (x+2) <= 8 && (y-1) >= 9 {
+						if (x+2) <= 8 && (y-1) >= 0 {
 							if moment.Board[y][x+1] == nil && moment.Board[y-1][x+2] == nil {
 								moment.Board[y-1][x+2] = moment.Board[y][x]
 								moment.Board[y][x] = nil
@@ -740,7 +740,7 @@ func Steps(moment Moment, count int) {
 						// -----
 						//left up
 						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
-						if (x+1) >= 0 && (y-2) <= 9 {
+						if (x+1) <= 8 && (y-2) >= 0 {
 							if moment.Board[y-1][x] == nil && moment.Board[y-2][x+1] == nil {
 								moment.Board[y-2][x+1] = moment.Board[y][x]
 								moment.Board[y][x] = nil
@@ -771,7 +771,7 @@ func Steps(moment Moment, count int) {
 
 						//left down
 						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
-						if (x-1) >= 0 && (y-2) >= 9 {
+						if (x-1) >= 0 && (y-2) >= 0 {
 							if moment.Board[y-1][x] == nil && moment.Board[y-2][x-1] == nil {
 								moment.Board[y-2][x-1] = moment.Board[y][x]
 								moment.Board[y][x] = nil
@@ -787,7 +787,7 @@ func Steps(moment Moment, count int) {
 
 						//right down
 						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
-						if (x-1) <= 8 && (y+2) >= 9 {
+						if (x-1) >= 0 && (y+2) <= 9 {
 							if moment.Board[y+1][x] == nil && moment.Board[y+2][x-1] == nil {
 								moment.Board[y+2][x-1] = moment.Board[y][x]
 								moment.Board[y][x] = nil
@@ -804,7 +804,7 @@ func Steps(moment Moment, count int) {
 					} else if xyboard.Color == black {
 						//left up
 						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
-						if (x-2) >= 0 && (y+1) <= 4 {
+						if (x-2) >= 0 && (y+1) <= 9 {
 							if moment.Board[y][x-1] == nil && moment.Board[y+1][x-2] == nil {
 								moment.Board[y+1][x-2] = moment.Board[y][x]
 								moment.Board[y][x] = nil
@@ -819,7 +819,7 @@ func Steps(moment Moment, count int) {
 						}, count+1)
 						//right up
 						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
-						if (x+2) <= 8 && (y+1) <= 4 {
+						if (x+2) <= 8 && (y+1) <= 9 {
 							if moment.Board[y][x+1] == nil && moment.Board[y+1][x+2] == nil {
 								moment.Board[y+1][x+2] = moment.Board[y][x]
 								moment.Board[y][x] = nil
@@ -867,7 +867,7 @@ func Steps(moment Moment, count int) {
 						//-------
 						//left up
 						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
-						if (x+1) >= 0 && (y-2) <= 9 {
+						if (x+1) <= 8 && (y-2) >= 0 {
 							if moment.Board[y-1][x] == nil && moment.Board[y-2][x+1] == nil {
 								moment.Board[y-2][x+1] = moment.Board[y][x]
 								moment.Board[y][x] = nil
@@ -914,7 +914,7 @@ func Steps(moment Moment, count int) {
 
 						//right down
 						moment = ChessLibrary.GetBoard2Redis(fmt.Sprint(hash))
-						if (x-1) <= 8 && (y+2) >= 0 {
+						if (x-1) >= 0 && (y+2) <= 9 {
 							if moment.Board[y+1][x] == nil && moment.Board[y+2][x-1] == nil {
 								moment.Board[y+2][x-1] = moment.Board[y][x]
 								moment.Board[y][x] = nil
@@ -930,6 +930,7 @@ func Steps(moment Moment, count int) {
 
 					}
 				case 炮:
+
 				case 兵:
 				}
 			}
@@ -961,8 +962,8 @@ func main() {
 	// 	var strHash string
 	// 	fmt.Scanf("%s", &strHash)
 	// 	fmt.Println(display((ChessLibrary.GetBoard2Redis(strHash).Board)))
-
 	// }
+
 	var moment Moment
 	// library := map[int64]Moment{}
 	moment.Action = red
