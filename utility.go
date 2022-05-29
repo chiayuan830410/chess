@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/shomali11/util/xhashes"
+)
 
 func display(board Board) (displayBoard string) {
 	displayBoard = ""
@@ -53,4 +57,24 @@ func display(board Board) (displayBoard string) {
 		displayBoard = displayBoard + fmt.Sprint(x, "\t")
 	}
 	return displayBoard
+}
+
+func (moment *Moment) DisplayStringMoment() string {
+	s := display(moment.Board)
+	return fmt.Sprint(moment.Action, s)
+}
+
+func (moment *Moment) GetAllPiece() (pieces []*Piece) {
+
+	for _, bb := range moment.Board {
+		for _, b := range bb {
+			if b != nil {
+				pieces = append(pieces, b)
+			}
+		}
+	}
+	return pieces
+}
+func (moment *Moment) Hash() string {
+	return fmt.Sprint(xhashes.FNV64(moment.DisplayStringMoment()))
 }

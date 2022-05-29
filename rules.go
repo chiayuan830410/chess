@@ -31,9 +31,14 @@ const (
 	JUMPRIGHT
 )
 
-func (m *Moment) Walk(p *Piece, direction int, distance int) error {
+// result 0 : none
+// result 1 : no result
+// result 2 : red win
+// result 3 : black win
+
+func (m *Moment) Walk(p *Piece, direction int, distance int) (result int, err error) {
 	if p == nil {
-		return errors.New("empty piece")
+		return 0, errors.New("empty piece")
 	}
 
 	// find piece
@@ -52,7 +57,7 @@ func (m *Moment) Walk(p *Piece, direction int, distance int) error {
 	}
 
 	if m.Action != p.Color {
-		return errors.New("wrong move")
+		return 0, errors.New("wrong move")
 	}
 
 	var xx, yy int
@@ -68,24 +73,28 @@ func (m *Moment) Walk(p *Piece, direction int, distance int) error {
 		case KILL:
 			if m.Action == red {
 				for yyy := y - 1; yyy >= 0; yyy-- {
-					if m.Board[yyy][x].Piece == 將 {
-						xx = x
-						yy = yyy
-						stock = nil
-						break
+					if m.Board[yyy][x] != nil {
+						if m.Board[yyy][x].Piece == 將 {
+							xx = x
+							yy = yyy
+							stock = nil
+							break
+						}
 					}
 				}
-				return errors.New("wrong move")
+				return 0, errors.New("wrong move")
 			} else if m.Action == black {
 				for yyy := y + 1; yyy <= 9; yyy++ {
-					if m.Board[yyy][x].Piece == 將 {
-						xx = x
-						yy = yyy
-						stock = nil
-						break
+					if m.Board[yyy][x] != nil {
+						if m.Board[yyy][x].Piece == 將 {
+							xx = x
+							yy = yyy
+							stock = nil
+							break
+						}
 					}
 				}
-				return errors.New("wrong move")
+				return 0, errors.New("wrong move")
 			}
 		case UP:
 			xx = x
@@ -104,15 +113,15 @@ func (m *Moment) Walk(p *Piece, direction int, distance int) error {
 			yy = y
 			stock = nil
 		default:
-			return errors.New("wrong move")
+			return 0, errors.New("wrong move")
 		}
 
 		if direction != KILL {
 			if xx < 3 || xx > 5 {
-				return errors.New("wrong move")
+				return 0, errors.New("wrong move")
 			}
 			if yy > 2 && yy < 7 {
-				return errors.New("wrong move")
+				return 0, errors.New("wrong move")
 			}
 		}
 	case 士:
@@ -134,7 +143,7 @@ func (m *Moment) Walk(p *Piece, direction int, distance int) error {
 			yy = y + 1
 			stock = nil
 		default:
-			return errors.New("wrong move")
+			return 0, errors.New("wrong move")
 		}
 	case 象:
 
@@ -168,11 +177,11 @@ func (m *Moment) Walk(p *Piece, direction int, distance int) error {
 				YY: y + 1,
 			})
 		default:
-			return errors.New("wrong move")
+			return 0, errors.New("wrong move")
 		}
 	case 車:
 		if distance < 1 {
-			return errors.New("wrong move")
+			return 0, errors.New("wrong move")
 		}
 		switch direction {
 		case UP:
@@ -212,7 +221,7 @@ func (m *Moment) Walk(p *Piece, direction int, distance int) error {
 				})
 			}
 		default:
-			return errors.New("wrong move")
+			return 0, errors.New("wrong move")
 		}
 
 	case 馬:
@@ -274,7 +283,7 @@ func (m *Moment) Walk(p *Piece, direction int, distance int) error {
 				YY: y - 1,
 			})
 		default:
-			return errors.New("wrong move")
+			return 0, errors.New("wrong move")
 		}
 	case 炮:
 		if (direction == UP ||
@@ -282,7 +291,7 @@ func (m *Moment) Walk(p *Piece, direction int, distance int) error {
 			direction == LEFT ||
 			direction == RIGHT) &&
 			distance < 1 {
-			return errors.New("wrong move")
+			return 0, errors.New("wrong move")
 		}
 
 		switch direction {
@@ -338,7 +347,7 @@ func (m *Moment) Walk(p *Piece, direction int, distance int) error {
 				}
 			}
 			if count != 2 {
-				return errors.New("wrong move")
+				return 0, errors.New("wrong move")
 			}
 		case JUMPDOWN:
 			xx = -1
@@ -356,7 +365,7 @@ func (m *Moment) Walk(p *Piece, direction int, distance int) error {
 				}
 			}
 			if count != 2 {
-				return errors.New("wrong move")
+				return 0, errors.New("wrong move")
 			}
 		case JUMPLEFT:
 			xx = -1
@@ -374,7 +383,7 @@ func (m *Moment) Walk(p *Piece, direction int, distance int) error {
 				}
 			}
 			if count != 2 {
-				return errors.New("wrong move")
+				return 0, errors.New("wrong move")
 			}
 		case JUMPRIGHT:
 			xx = -1
@@ -392,28 +401,28 @@ func (m *Moment) Walk(p *Piece, direction int, distance int) error {
 				}
 			}
 			if count != 2 {
-				return errors.New("wrong move")
+				return 0, errors.New("wrong move")
 			}
 		default:
-			return errors.New("wrong move")
+			return 0, errors.New("wrong move")
 		}
-		if direction == UP || direction == DOWN || direction == LEFT || direction == RIGHT {
-			if m.Board[yy][xx] != nil {
-				return errors.New("wrong move")
-			}
-		}
+		// if direction == UP || direction == DOWN || direction == LEFT || direction == RIGHT {
+		// 	if m.Board[yy][xx] != nil {
+		// 		return 0, errors.New("wrong move")
+		// 	}
+		// }
 	case 卒:
 		if m.Action == red && direction == DOWN {
-			return errors.New("wrong move")
+			return 0, errors.New("wrong move")
 		}
 		if m.Action == black && direction == UP {
-			return errors.New("wrong move")
+			return 0, errors.New("wrong move")
 		}
 		if m.Action == red && y >= 5 && (direction == LEFT || direction == RIGHT) {
-			return errors.New("wrong move")
+			return 0, errors.New("wrong move")
 		}
 		if m.Action == black && y <= 4 && (direction == LEFT || direction == RIGHT) {
-			return errors.New("wrong move")
+			return 0, errors.New("wrong move")
 		}
 		switch direction {
 		case UP:
@@ -433,7 +442,7 @@ func (m *Moment) Walk(p *Piece, direction int, distance int) error {
 			yy = y
 			stock = nil
 		default:
-			return errors.New("wrong move")
+			return 0, errors.New("wrong move")
 		}
 
 	}
@@ -445,7 +454,7 @@ func (m *Moment) Walk(p *Piece, direction int, distance int) error {
 				continue
 			}
 			if m.Board[s.YY][s.XX] != nil {
-				return errors.New("wrong move")
+				return 0, errors.New("wrong move")
 			}
 		}
 	}
@@ -457,13 +466,23 @@ func (m *Moment) Walk(p *Piece, direction int, distance int) error {
 	yrear := 9
 
 	if xx < xfront || xx > xrear || yy < yfront || yy > yrear {
-		return errors.New("wrong move")
+		return 0, errors.New("wrong move")
 	}
+
+	result = 1 // no result
 	if m.Board[yy][xx] != nil {
 		if m.Board[yy][xx].Color == m.Action {
-			return errors.New("wrong move")
+			return 0, errors.New("wrong move")
+		}
+		if m.Board[yy][xx].Piece == 將 {
+			if m.Board[yy][xx].Color == red {
+				result = 3 //black win
+			} else if m.Board[yy][xx].Color == black {
+				result = 2 //red win
+			}
 		}
 	}
+
 	m.Board[yy][xx] = m.Board[y][x]
 	m.Board[y][x] = nil
 	if m.Action == red {
@@ -471,5 +490,5 @@ func (m *Moment) Walk(p *Piece, direction int, distance int) error {
 	} else if m.Action == black {
 		m.Action = red
 	}
-	return nil
+	return result, nil
 }

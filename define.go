@@ -26,6 +26,18 @@ type Moment struct {
 	Action int // red: 1, black: 2
 }
 
+type NextMomentResult struct {
+	Hash     string
+	NoResult int
+	RedWin   int
+	BlackWin int
+}
+
+type MomentResult struct {
+	Moment
+	Next []NextMomentResult
+}
+
 var initBoard Board = Board{
 	{{車, black}, {馬, black}, {象, black}, {士, black}, {將, black}, {士, black}, {象, black}, {馬, black}, {車, black}},
 	{},

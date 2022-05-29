@@ -7,9 +7,113 @@ import (
 var ChessLibrary ChessDB
 var maxCount = 0
 
-// func Steps(moment Moment, count int) {
+func Steps(moment Moment, count int) (noResult, redWin, blackWin int) {
+	if count == 0 { // no result
+		return 1, 0, 0
+	}
 
-// }
+	pieces := moment.GetAllPiece()
+
+	for _, p := range pieces {
+		if p.Color == moment.Action {
+
+			var directions, distances []int
+			switch p.Piece {
+			case 將:
+				directions = []int{UP, DOWN, LEFT, RIGHT, KILL}
+				distances = []int{1}
+			case 士:
+				directions = []int{LEFTUP, LEFTDOWN, RIGHTUP, RIGHTDOWN}
+				distances = []int{1}
+			case 象:
+				directions = []int{LEFTUP, LEFTDOWN, RIGHTUP, RIGHTDOWN}
+				distances = []int{1}
+			case 車:
+				directions = []int{UP, DOWN, LEFT, RIGHT}
+				distances = []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+			case 馬:
+				directions = []int{LEFTLEFTUP, LEFTLEFTDOWN, RIGHTRIGHTUP, RIGHTRIGHTDOWN, LEFTUPUP, LEFTDOWNDOWN, RIGHTUPUP, RIGHTDOWNDOWN}
+				distances = []int{1}
+			case 炮:
+				directions = []int{UP, DOWN, LEFT, RIGHT, JUMPUP, JUMPDOWN, JUMPLEFT, JUMPRIGHT}
+				distances = []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+			case 卒:
+				directions = []int{UP, DOWN, LEFT, RIGHT}
+				distances = []int{1}
+			}
+			for _, direction := range directions {
+				for _, distance := range distances {
+					nextMoment := moment
+					result, err := nextMoment.Walk(p, direction, distance) // walk
+					if err != nil {
+						continue
+					}
+					if result == 2 { // red win
+						ChessLibrary.SetBoard2Redis(moment.Hash(), MomentResult{
+							Moment: moment,
+							Next: []NextMomentResult{{
+								Hash:     nextMoment.Hash(),
+								NoResult: 0,
+								RedWin:   1,
+								BlackWin: 0,
+							},
+							},
+						})
+						ChessLibrary.SetBoard2Redis(nextMoment.Hash(), MomentResult{
+							Moment: nextMoment,
+							Next: []NextMomentResult{{
+								Hash:     "",
+								NoResult: 0,
+								RedWin:   0,
+								BlackWin: 0,
+							},
+							},
+						})
+						return 0, 1, 0
+					} else if result == 3 { //black win
+						ChessLibrary.SetBoard2Redis(moment.Hash(), MomentResult{
+							Moment: moment,
+							Next: []NextMomentResult{{
+								Hash:     "",
+								NoResult: 0,
+								RedWin:   0,
+								BlackWin: 0,
+							},
+							},
+						})
+						ChessLibrary.SetBoard2Redis(nextMoment.Hash(), MomentResult{
+							Moment: nextMoment,
+							Next: []NextMomentResult{{
+								Hash:     "",
+								NoResult: 0,
+								RedWin:   0,
+								BlackWin: 0,
+							},
+							},
+						})
+						return 0, 0, 1
+					}
+					nr, rw, bw := Steps(nextMoment, count-1) // to next
+					ChessLibrary.SetBoard2Redis(moment.Hash(), MomentResult{
+						Moment: moment,
+						Next: []NextMomentResult{{
+							Hash:     "",
+							NoResult: nr,
+							RedWin:   rw,
+							BlackWin: bw,
+						},
+						},
+					})
+					noResult = noResult + nr
+					redWin = redWin + rw
+					blackWin = blackWin + bw
+				}
+			}
+		}
+	}
+
+	return noResult, redWin, blackWin
+}
 
 var library map[uint64]Moment
 
@@ -25,57 +129,5 @@ func main() {
 		Board:  initBoard,
 		Action: red,
 	}
-	fmt.Println(moment.Walk(moment.Board[9][0], UP, 1))
-	fmt.Println(moment.Action, "\n", display(moment.Board))
-
-	fmt.Println(moment.Walk(moment.Board[0][0], DOWN, 1))
-	fmt.Println(moment.Action, "\n", display(moment.Board))
-
-	fmt.Println(moment.Walk(moment.Board[8][0], RIGHT, 6))
-	fmt.Println(moment.Action, "\n", display(moment.Board))
-
-	fmt.Println(moment.Walk(moment.Board[1][0], DOWN, 1))
-	fmt.Println(moment.Action, "\n", display(moment.Board))
-
-	fmt.Println(moment.Walk(moment.Board[9][7], LEFTUPUP, 0))
-	fmt.Println(moment.Action, "\n", display(moment.Board))
-
-	fmt.Println(moment.Walk(moment.Board[2][7], DOWN, 4))
-	fmt.Println(moment.Action, "\n", display(moment.Board))
-
-	fmt.Println(moment.Walk(moment.Board[7][7], JUMPUP, 0))
-	fmt.Println(moment.Action, "\n", display(moment.Board))
-
-	fmt.Println(moment.Walk(moment.Board[6][7], JUMPLEFT, 4))
-	fmt.Println(moment.Action, "\n", display(moment.Board))
-
-	fmt.Println(moment.Walk(moment.Board[9][6], RIGHTUP, 0))
-	fmt.Println(moment.Action, "\n", display(moment.Board))
-
-	fmt.Println(moment.Walk(moment.Board[6][4], DOWN, 2))
-	fmt.Println(moment.Action, "\n", display(moment.Board))
-
-	fmt.Println(moment.Walk(moment.Board[9][2], RIGHTUP, 0))
-	fmt.Println(moment.Action, "\n", display(moment.Board))
-
-	fmt.Println(moment.Walk(moment.Board[8][4], LEFT, 1))
-	fmt.Println(moment.Action, "\n", display(moment.Board))
-
-	fmt.Println(moment.Walk(moment.Board[7][4], LEFTDOWN, 0))
-	fmt.Println(moment.Action, "\n", display(moment.Board))
-
-	fmt.Println(moment.Walk(moment.Board[6][2], UP, 1))
-	fmt.Println(moment.Action, "\n", display(moment.Board))
-
-	fmt.Println(moment.Walk(moment.Board[3][2], DOWN, 1))
-	fmt.Println(moment.Action, "\n", display(moment.Board))
-
-	fmt.Println(moment.Walk(moment.Board[5][2], UP, 1))
-	fmt.Println(moment.Action, "\n", display(moment.Board))
-
-	fmt.Println(moment.Walk(moment.Board[3][4], DOWN, 2))
-	fmt.Println(moment.Action, "\n", display(moment.Board))
-
-	fmt.Println(moment.Walk(moment.Board[7][6], LEFTLEFTUP, 1))
-	fmt.Println(moment.Action, "\n", display(moment.Board))
+	fmt.Println(Steps(moment, 10))
 }

@@ -16,8 +16,8 @@ func (c *ChessDB) New() {
 	c.ctx = context.Background()
 	c.RDB = redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
-		Password: "a830410a", // no password set
-		DB:       0,          // use default DB
+		Password: "", // no password set
+		DB:       0,  // use default DB
 	})
 }
 
@@ -33,13 +33,13 @@ func (c *ChessDB) CheckBoard2Redis(hash string) bool {
 	}
 }
 
-func (c *ChessDB) SetBoard2Redis(hash string, moment Moment) {
+func (c *ChessDB) SetBoard2Redis(hash string, moment MomentResult) {
 	err := c.RDB.Set(c.ctx, hash, c.MarshalBinary(moment), 0).Err()
 	if err != nil {
 		panic(err)
 	}
 }
-func (c *ChessDB) GetBoard2Redis(hash string) (moment Moment) {
+func (c *ChessDB) GetBoard2Redis(hash string) (moment MomentResult) {
 	b, err := c.RDB.Get(c.ctx, hash).Result()
 	if err != nil {
 		panic(err)
@@ -47,7 +47,7 @@ func (c *ChessDB) GetBoard2Redis(hash string) (moment Moment) {
 	moment = c.UnMarshalBinary(b)
 	return moment
 }
-func (c *ChessDB) MarshalBinary(moment Moment) []byte {
+func (c *ChessDB) MarshalBinary(moment MomentResult) []byte {
 	b, err := json.Marshal(moment)
 	if err != nil {
 		panic(err)
@@ -55,7 +55,7 @@ func (c *ChessDB) MarshalBinary(moment Moment) []byte {
 	return b
 }
 
-func (c *ChessDB) UnMarshalBinary(data string) (moment Moment) {
+func (c *ChessDB) UnMarshalBinary(data string) (moment MomentResult) {
 
 	b := []byte(data)
 	err := json.Unmarshal(b, &moment)
