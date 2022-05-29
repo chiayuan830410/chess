@@ -6,15 +6,30 @@ import (
 
 var ChessLibrary ChessDB
 var maxCount = 0
+var stack = 10
 
 func Steps(moment Moment, count int) (noResult, redWin, blackWin int) {
+	var nextMomentResults []NextMomentResult
 	if count == 0 { // no result
 		return 1, 0, 0
 	}
 
+	if ChessLibrary.CheckBoard2Redis(moment.Hash()) { // dynamic
+		result := ChessLibrary.GetBoard2Redis(moment.Hash())
+		for _, r := range result.Next {
+			noResult = noResult + r.NoResult
+			redWin = redWin + r.NoResult
+			blackWin = blackWin + r.BlackWin
+		}
+		return noResult, redWin, blackWin
+	}
+
 	pieces := moment.GetAllPiece()
 
-	for _, p := range pieces {
+	for indexPieces, p := range pieces {
+		if count == stack {
+			fmt.Println((indexPieces + 1), len(pieces), p.Piece, p.Color)
+		}
 		if p.Color == moment.Action {
 
 			var directions, distances []int
@@ -77,7 +92,7 @@ func Steps(moment Moment, count int) (noResult, redWin, blackWin int) {
 								Hash:     "",
 								NoResult: 0,
 								RedWin:   0,
-								BlackWin: 0,
+								BlackWin: 1,
 							},
 							},
 						})
@@ -94,15 +109,12 @@ func Steps(moment Moment, count int) (noResult, redWin, blackWin int) {
 						return 0, 0, 1
 					}
 					nr, rw, bw := Steps(nextMoment, count-1) // to next
-					ChessLibrary.SetBoard2Redis(moment.Hash(), MomentResult{
-						Moment: moment,
-						Next: []NextMomentResult{{
-							Hash:     "",
-							NoResult: nr,
-							RedWin:   rw,
-							BlackWin: bw,
-						},
-						},
+
+					nextMomentResults = append(nextMomentResults, NextMomentResult{
+						Hash:     nextMoment.Hash(),
+						NoResult: nr,
+						RedWin:   rw,
+						BlackWin: bw,
 					})
 					noResult = noResult + nr
 					redWin = redWin + rw
@@ -111,6 +123,10 @@ func Steps(moment Moment, count int) (noResult, redWin, blackWin int) {
 			}
 		}
 	}
+	ChessLibrary.SetBoard2Redis(moment.Hash(), MomentResult{
+		Moment: moment,
+		Next:   nextMomentResults,
+	})
 
 	return noResult, redWin, blackWin
 }
@@ -129,5 +145,45 @@ func main() {
 		Board:  initBoard,
 		Action: red,
 	}
-	fmt.Println(Steps(moment, 10))
+	fmt.Println(Steps(moment, stack))
+
+	// for {
+	// 	h := ""
+	// 	fmt.Scanf("%s", &h)
+	// 	r := ChessLibrary.GetBoard2Redis(h)
+	// 	fmt.Println(r.Moment.DisplayStringMoment())
+	// 	maxblack := 0
+	// 	bi := 0
+	// 	maxred := 0
+	// 	ri := 0
+	// 	for i, n := range r.Next {
+	// 		if n.BlackWin > maxblack {
+	// 			maxblack = n.BlackWin
+	// 			bi = i
+	// 		}
+	// 		if n.RedWin > maxred {
+	// 			maxred = n.RedWin
+	// 			ri = i
+	// 		}
+	// 	}
+	// 	fmt.Println(maxblack, maxred)
+
+	// 	if maxblack == 0 && maxred == 0 {
+	// 		fmt.Println("no win")
+	// 		fmt.Println(r.Next[0].Hash)
+	// 		bwin := ChessLibrary.GetBoard2Redis(r.Next[0].Hash)
+	// 		fmt.Println(bwin.DisplayStringMoment())
+	// 	}
+	// 	if maxblack != 0 {
+	// 		fmt.Println("black win")
+	// 		bwin := ChessLibrary.GetBoard2Redis(r.Next[bi].Hash)
+	// 		fmt.Println(bwin.DisplayStringMoment())
+	// 	}
+
+	// 	if maxred != 0 {
+	// 		fmt.Println("red win")
+	// 		rwin := ChessLibrary.GetBoard2Redis(r.Next[ri].Hash)
+	// 		fmt.Println(rwin.DisplayStringMoment())
+	// 	}
+	// }
 }
