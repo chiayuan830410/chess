@@ -6,11 +6,22 @@ import (
 
 var ChessLibrary ChessDB
 var maxCount = 0
-var stack = 10
+var stack = 100
 
 func Steps(moment Moment, count int) (noResult, redWin, blackWin int) {
 	var nextMomentResults []NextMomentResult
 	if count == 0 { // no result
+		ChessLibrary.SetBoard2Redis(moment.Hash(), MomentResult{
+			Moment: moment,
+			Next: []NextMomentResult{{
+				Hash:     "",
+				NoResult: 0,
+				RedWin:   0,
+				BlackWin: 0,
+			},
+			},
+		})
+
 		return 1, 0, 0
 	}
 
@@ -148,49 +159,51 @@ func main() {
 	}
 	fmt.Println(Steps(moment, stack))
 
-	for {
-		h := ""
-		fmt.Scanf("%s", &h)
-		r := ChessLibrary.GetBoard2Redis(h)
-		fmt.Println(r.Moment.DisplayStringMoment())
-		maxblack := 0
-		bi := 0
-		maxred := 0
-		ri := 0
-		maxno := 0
-		ni := 0
-		for i, n := range r.Next {
-			if n.BlackWin > maxblack {
-				maxblack = n.BlackWin
-				bi = i
-			}
-			if n.RedWin > maxred {
-				maxred = n.RedWin
-				ri = i
-			}
-			if n.NoResult > maxno {
-				maxno = n.NoResult
-				ni = i
-			}
-		}
-		fmt.Println(maxblack, maxred)
+	// for {
+	// 	h := ""
+	// 	fmt.Scanf("%s", &h)
+	// 	fmt.Println(h)
+	// 	r := ChessLibrary.GetBoard2Redis(h)
+	// 	fmt.Println(r.Moment.DisplayStringMoment())
+	// 	maxblack := 0
+	// 	bi := 0
+	// 	maxred := 0
+	// 	ri := 0
+	// 	maxno := 0
+	// 	ni := 0
+	// 	for i, n := range r.Next {
+	// 		fmt.Println(n)
+	// 		if n.BlackWin > maxblack {
+	// 			maxblack = n.BlackWin
+	// 			bi = i
+	// 		}
+	// 		if n.RedWin > maxred {
+	// 			maxred = n.RedWin
+	// 			ri = i
+	// 		}
+	// 		if n.NoResult > maxno {
+	// 			maxno = n.NoResult
+	// 			ni = i
+	// 		}
+	// 	}
+	// 	fmt.Println(maxblack, maxred)
 
-		if ni != 0 {
-			fmt.Println("no win")
-			fmt.Println(r.Next[0].Hash)
-			bwin := ChessLibrary.GetBoard2Redis(r.Next[0].Hash)
-			fmt.Println(bwin.DisplayStringMoment())
-		}
-		if maxblack != 0 {
-			fmt.Println("black win")
-			bwin := ChessLibrary.GetBoard2Redis(r.Next[bi].Hash)
-			fmt.Println(bwin.DisplayStringMoment())
-		}
+	// 	if maxno != 0 {
+	// 		fmt.Println("no win")
+	// 		fmt.Println(r.Next[ni].Hash)
+	// 		bwin := ChessLibrary.GetBoard2Redis(r.Next[ni].Hash)
+	// 		fmt.Println(bwin.DisplayStringMoment())
+	// 	}
+	// 	if maxblack != 0 {
+	// 		fmt.Println("black win")
+	// 		bwin := ChessLibrary.GetBoard2Redis(r.Next[bi].Hash)
+	// 		fmt.Println(bwin.DisplayStringMoment())
+	// 	}
 
-		if maxred != 0 {
-			fmt.Println("red win")
-			rwin := ChessLibrary.GetBoard2Redis(r.Next[ri].Hash)
-			fmt.Println(rwin.DisplayStringMoment())
-		}
-	}
+	// 	if maxred != 0 {
+	// 		fmt.Println("red win")
+	// 		rwin := ChessLibrary.GetBoard2Redis(r.Next[ri].Hash)
+	// 		fmt.Println(rwin.DisplayStringMoment())
+	// 	}
+	// }
 }
