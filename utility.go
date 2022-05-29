@@ -75,6 +75,21 @@ func (moment *Moment) GetAllPiece() (pieces []*Piece) {
 	}
 	return pieces
 }
+
+func (moment *Moment) GetActionPiece() (pieces []*Piece) {
+
+	for _, bb := range moment.Board {
+		for _, b := range bb {
+			if b != nil {
+				if b.Color == moment.Action {
+					pieces = append(pieces, b)
+				}
+			}
+		}
+	}
+	return pieces
+}
+
 func (moment *Moment) Hash() string {
 	return fmt.Sprint(xhashes.FNV64(moment.DisplayStringMoment()))
 }
